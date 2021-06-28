@@ -59,13 +59,34 @@ class User extends RestController {
         $this->response($data);
     }
 
-    public function user_put()
-    {
-        $user_name_put = $this->put('username');
-        $password_put = md5($this->put('password'));
-        $nama_put = $this->put('name');
+    public function user_post()
+    {   
+        $id = $this->post('id');
+        $user_name_put = $this->post('username');
+        $password_put = md5($this->post('password'));
+        $nama_put = $this->post('name');
+        $photo = $_FILES['photo'];
+        $image_url = "";
 
-        $data_put = $this->Model_user->update_user($user_name_put,$password_put,$nama_put);
+        if ($photo) {
+            $config['upload_path']          = './uploads/';
+            //for overwrite file
+            $config['overwrite']            = false;
+            $config['allowed_types']        = 'gif|jpg|png|jpeg';
+            $config['max_size']             = 0;
+            //$config['max_width']            = 640;
+            //$config['max_height']           = 640;
+            $config['file_name']            = $photo['name'];
+
+            $this->load->library('upload', $config);
+            $upload = $this->upload->do_upload('photo'); 
+
+            if ($upload) {
+                $image_url = base_url().'upload/'.$photo['name'];
+            }
+        }
+
+        $data_put = $this->Model_user->update_user($id, $user_name_put,$password_put,$nama_put,$image_url);
 
         $response_put = [
             "status"    => false,
@@ -79,7 +100,7 @@ class User extends RestController {
                 "message"   => "Berhasil Ubah Data"
             ];
             $response_code = RestController::HTTP_CREATED;
-        }
+        }      
 
         $this->response($response_put, $response_code);
     

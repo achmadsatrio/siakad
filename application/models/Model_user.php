@@ -34,15 +34,16 @@ class Model_user extends CI_Model {
         return $this->db->get('user')->row();
     }
 
-    public function update_user($user_name_put,$password_put,$nama_put)
+    public function update_user($id, $user_name_put, $password_put, $nama_put, $image_url)
     {
         $user_put = [
             'username'     => $user_name_put,
             'password'      => $password_put,
-            'name'          => $nama_put
+            'name'          => $nama_put,
+            'image_url' => $image_url
         ];
 
-        $this->db->where('username',$user_name_put);
+        $this->db->where('id',$id);
         $this->db->update('user',$user_put);
         return $this->db->affected_rows();
     }
