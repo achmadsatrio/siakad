@@ -7,7 +7,6 @@ require APPPATH . 'libraries/Format.php';
 use majooportal\Libraries\RestController;
 
 
-
 /**
  * @property Model_user $Model_user
  * @property Token_parser $token_parser
@@ -49,18 +48,32 @@ class User extends RestController {
 	
     public function all_user_get()
     {
-        
         $data = $this->Model_user->getAll();
         $this->response($data);
-
     }
 
     public function spesific_user_get()
     {
-        $getUser = $this->get('username');
+        $id = $this->get('id');
+        $data = $this->Model_user->get_by_user($id);
         
-        $data = $this->Model_user->get_by_user($getUser);
-        $this->response($data);
+        $response = [
+            "status"    => false,
+            "message"   => "Gagal Mendapatkan Data",
+        ];
+        $response_code = RestController::HTTP_CREATED;
+
+        if ($data) {
+            $response = [
+                "status"    => true,
+                "message"   => "Berhasil Mendapatkan Data",
+                "data"      => $data,
+                "queri" => $this->db->queries
+            ];
+            $response_code = RestController::HTTP_CREATED;
+        }
+
+        $this->response($response, $response_code);
     }
 
     public function update_post()
@@ -138,7 +151,6 @@ class User extends RestController {
             $response = [
                 "status"    => true,
                 "message"   => "Berhasil Menghapus Data",
-                "query" => $this->db->queries,
             ];
             $response_code = RestController::HTTP_CREATED;
         }

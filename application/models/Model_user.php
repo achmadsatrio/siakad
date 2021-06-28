@@ -27,9 +27,9 @@ class Model_user extends CI_Model {
         return $this->db->affected_rows();
     }
 
-    public function get_by_user($getUser_M = 0)
+    public function get_by_user($id)
     {
-        $this->db->where('username',$getUser_M);
+        $this->db->where('id',$id);
         return $this->db->get('user')->row();
     }
 
