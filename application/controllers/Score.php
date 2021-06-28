@@ -55,7 +55,6 @@ class score extends RestController {
         $createdate = date('Y-m-d H:i:s');
         $createby = $this->id;
 
-        //print_r($this->role);exit;
         if ($this->role != 1 && $this->role != 3) {
            $this->response([
                "status"    => false,
@@ -67,7 +66,7 @@ class score extends RestController {
 
         $this->response([
             "status"    => true,
-            "message"   => "Data Berhasil Ditambahkan!"   
+            "message"   => "Data Berhasil Ditambahkan!"
         ],RestController::HTTP_CREATED);      
     }
 
@@ -151,6 +150,7 @@ class score extends RestController {
             $response = [
                 "status"    => false,
                 "message"   => "Anda Tidak Diperkenankan!"
+                
             ];
             $response_code = RestController::HTTP_BAD_REQUEST;
             $this->response($response, $response_code);

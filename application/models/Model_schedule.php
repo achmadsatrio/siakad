@@ -34,4 +34,12 @@ class Model_schedule extends CI_Model {
            $this->db->insert('schedule_has_student',$schedule_detail);
            return $this->db->insert_id();
     }
+
+    public function get_by_id($id_student = 0)
+    {
+        if ($id_student) {
+            $this->db->where('student_id', $id_student);
+        }
+        return $this->db->get('schedule_has_student')->result();
+    }
 }

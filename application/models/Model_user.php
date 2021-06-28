@@ -10,8 +10,7 @@ class Model_user extends CI_Model {
 
     public function getAll()
     {
-        return $this->db->get('user')->result();
-        //   
+        return $this->db->get('user')->result(); 
     }
 
     public function create_user($user_name, $password, $nama, $role, $createdate)
@@ -48,10 +47,17 @@ class Model_user extends CI_Model {
         return $this->db->affected_rows();
     }
 
-    public function delete_user_m($id_user)
+    public function delete_user($id, $updatedate, $updateby)
     {
-        $this->db->where('id_user', $id_user);
-        return $this->db->delete('M_User');
+        // status 1 (ACTIVE), status 2 (INACTIVE)
+        $score_delete = [
+            'updatedate' => $updatedate,
+            'updateby' => $updateby,
+            'status' => 2
+        ];
+        $this->db->where('id', $id);
+        $this->db->update('user', $score_delete);
+        return $this->db->affected_rows();
     }
 
     public function login_post_m($user_name_login,$password_login)

@@ -13,7 +13,9 @@ use majooportal\Libraries\RestController;
  * @property Token_parser $token_parser
  */
 class User extends RestController {
-    
+    private $id;
+    private $role;
+
     public function __construct(    ) {
         parent::__construct();
         $this->load->model('Model_user');
@@ -31,6 +33,8 @@ class User extends RestController {
         $token = $header['token'];
         $tokenDecode = $this->token_parser->decode($token);
         $kadaluarsa = $tokenDecode->kadaluarsa;
+        $this->id = $tokenDecode->id;
+        $this->role = $tokenDecode->role;
         $date = date('Y-m-d H:i:s');
         $dateKadaluarsa = date('Y-m-d H:i:s', $kadaluarsa);
         
@@ -59,7 +63,7 @@ class User extends RestController {
         $this->response($data);
     }
 
-    public function user_post()
+    public function update_post()
     {   
         $id = $this->post('id');
         $user_name_put = $this->post('username');
@@ -97,7 +101,7 @@ class User extends RestController {
         if ($data_put) {
             $response_put = [
                 "status"    => true,
-                "message"   => "Berhasil Ubah Data"
+                "message"   => "Berhasil Ubah Data",
             ];
             $response_code = RestController::HTTP_CREATED;
         }      
@@ -106,27 +110,40 @@ class User extends RestController {
     
     }
 
-    public function delete_user_delete($id)
+    public function delete_user_put()
     {
-        //$id_delete = $this->delete('id_user');
+        $id = $this->put('id');
+        $updatedate = date('Y-m-d H:i:s');
+        $updateby = $this->id;
+        $role = $this->role;
 
-        $data_delete = $this->Model_user->delete_user_m($id);
-
-        $response_delete = [
-            "status"    => false,
-            "message"   => "Gagal"
-        ];
-        $response_code_delete = RestController::HTTP_BAD_REQUEST;
-
-        if ($data_delete) {
-            $response_code_delete = [
-                "status"    => true,
-                "message"   => "Berhasil"
+        if ($this->role != 1) {
+            $response = [
+                "status"    => false,
+                "message"   => "Anda Tidak Diperkenankan!"
             ];
-            $response_code_delete = RestController::HTTP_CREATED;
+            $response_code = RestController::HTTP_BAD_REQUEST;
+            $this->response($response, $response_code);
         }
 
-        $this->response($response_delete, $response_code_delete);   
+        $response = [
+            "status"    => false,
+            "message"   => "Gagal Menghapus Data"
+        ];
+        $response_code = RestController::HTTP_BAD_REQUEST;
+
+        $data_delete = $this->Model_user->delete_user($id, $updatedate, $updateby);
+
+        if ($data_delete) {
+            $response = [
+                "status"    => true,
+                "message"   => "Berhasil Menghapus Data",
+                "query" => $this->db->queries,
+            ];
+            $response_code = RestController::HTTP_CREATED;
+        }
+
+        $this->response($response, $response_code); 
     }
 
 }

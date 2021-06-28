@@ -58,7 +58,7 @@ class schedule extends RestController {
         if ($this->role != 1 && $this->role != 3) {
             $this->response([
                 "status"    => false,
-                "message"  => "Anda Tidak Diperkenankan!"
+                "message"  => "Anda Tidak Diperkenankan!",
             ],RestController::HTTP_BAD_REQUEST);       
         } 
 
@@ -67,7 +67,7 @@ class schedule extends RestController {
         $this->response([
             "status"    => true,
             "message"   => "Data Berhasil Ditambahkan!",
-            "data" => $data   
+            "data" => $data,
         ],RestController::HTTP_CREATED);      
     }
 
@@ -90,9 +90,45 @@ class schedule extends RestController {
         $this->response([
             "status"    => true,
             "message"   => "Data Berhasil Ditambahkan!",
-            "data" => $data   
+            "data" => $data,   
         ],RestController::HTTP_CREATED);    
     }
 
+    public function view_get()
+    {
+        $id = $this->get('id_user');
+        
+        if ($this->role != 2 && $this->role != 4) {
+            $response = [
+                "status"    => false,
+                "message"   => "Anda Tidak Diperkenankan!"
+            ];
+            $response_code = RestController::HTTP_BAD_REQUEST;
+            $this->response($response, $response_code);
+        }
+        
+        if ($this->role == 4) {
+            $id = $this->id;
+            $data = $this->Model_schedule->get_by_id($id);
+            $response = [
+                "status"    => true,
+                "message"   => "Berhasil Mendapatkan Data!",
+                "data" => empty($data) ? null : $data,
+            ];
+            $response_code = RestController::HTTP_OK;
+            $this->response($response, $response_code);
+        }
+        
+        if ($this->role == 2) {
+            $data = $this->Model_schedule->get_by_id($id);
+            $response = [
+                "status"    => true,
+                "message"   => "Berhasil Mendapatkan Data!",
+                "data" => empty($data) ? null : $data,
+            ];
+            $response_code = RestController::HTTP_OK;
+            $this->response($response, $response_code);
+        }
+    }
     
 }

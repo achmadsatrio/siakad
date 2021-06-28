@@ -68,7 +68,7 @@ class Admin extends RestController {
         
         $this->response([
             "status"    => true,
-            "message"   => "Berhasil!"   
+            "message"   => "Berhasil!",
         ],RestController::HTTP_CREATED);        
     }
 }
